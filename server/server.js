@@ -2,7 +2,7 @@ const { ApolloServer } = require("apollo-server");
 const mongoose = require("mongoose");
 
 // relative imports
-const { MONGODB_URI } = require("./config");
+const { MONGODB_URI } = require("./env");
 const typeDefs = require("./gql/type_defs/typeDefs");
 const postResolver = require("./gql/resolvers/postsResolver");
 const userResolver = require("./gql/resolvers/usersResolver");
