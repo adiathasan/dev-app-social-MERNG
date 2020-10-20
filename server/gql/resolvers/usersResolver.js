@@ -21,7 +21,6 @@ const gererateToken = async (user) => {
 const userResolver = {
   Mutation: {
     login: async (_, { loginInput: { email, password } }) => {
-      console.log(email, password);
       const { isValid, errors } = validateLoginInput({ email, password });
       if (!isValid) {
         throw new UserInputError("Validation failed", {
