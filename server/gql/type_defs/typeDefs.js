@@ -16,6 +16,7 @@ const typeDefs = gql`
   }
   type User {
     _id: ID!
+    image: String!
     username: String!
     email: String!
     token: String!
@@ -25,6 +26,7 @@ const typeDefs = gql`
     _id: ID!
     body: String!
     user: User
+    image: String!
     comments: [comments]!
     likes: [likes]!
     totalComment: Int!
@@ -53,7 +55,7 @@ const typeDefs = gql`
     register(registerInput: registerInput): User!
   }
   extend type Mutation {
-    createPost(body: String!): Post!
+    createPost(body: String!, image: String): Post!
     updatePost(postId: ID!, body: String!): Post!
     deletePost(postId: ID!): String
   }

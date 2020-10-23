@@ -1,12 +1,13 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Alert, AlertTitle } from "@material-ui/lab";
+import { Alert } from "@material-ui/lab";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     "& > * + *": {
       marginTop: theme.spacing(2),
     },
+    textAlign: "center",
   },
 }));
 

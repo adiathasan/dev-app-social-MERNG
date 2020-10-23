@@ -7,21 +7,25 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation } from "react-apollo";
 import { REGISTER_MUTATION } from "../gql/authentication/userMutation";
 import Message from "../components/Message";
+import { useDispatch, useSelector } from "react-redux";
+import { LOADER_REQUEST, LOADER_SUCCESS } from "../constants/postConstants";
+import { userSignUpAction } from "../actions/userActions";
 
-const RegisterScreen = () => {
+const RegisterScreen = ({ history }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [message, setMessage] = useState(null);
-  const [addUser, { loading }] = useMutation(REGISTER_MUTATION, {
-    update(proxy, result) {
-      console.log(result);
+  const [resultUser, setResultUser] = useState(null);
+  const [registerFunc, { loading }] = useMutation(REGISTER_MUTATION, {
+    update(_, { data }) {
+      setResultUser(data);
     },
     variables: {
       username: name,
@@ -30,13 +34,31 @@ const RegisterScreen = () => {
     },
   });
 
+  const { user } = useSelector((state) => state.user);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (user) {
+      history.push("/");
+    } else {
+      if (loading) {
+        dispatch({ type: LOADER_REQUEST });
+      } else if (!loading && resultUser) {
+        dispatch(userSignUpAction({ login: resultUser.register }));
+        dispatch({ type: LOADER_SUCCESS });
+      }
+    }
+  }, [loading, dispatch, resultUser, history, user]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password === confirm) {
       try {
-        await addUser();
-      } catch (_) {
-        setMessage("Oops! Email already in use");
+        await registerFunc();
+      } catch ({ graphQLErrors }) {
+        setMessage("Oops! " + graphQLErrors[0].message);
+        dispatch({ type: LOADER_SUCCESS });
         setTimeout(() => {
           setMessage(null);
         }, 4000);
@@ -51,8 +73,8 @@ const RegisterScreen = () => {
 
   return (
     <>
-      <Grid item xs={1} sm={4} />
-      <Grid item xs={10} sm={4} justify="center" container>
+      <Grid item xs={1} sm={3} />
+      <Grid item xs={10} sm={6} justify="center" container>
         <Typography variant="h4" style={{ color: "darkblue" }}>
           Register
           <Divider />
@@ -119,6 +141,7 @@ const RegisterScreen = () => {
               color="secondary"
               required
               type="password"
+              error={password !== confirm}
             />
           </FormControl>
           <Button
@@ -130,7 +153,7 @@ const RegisterScreen = () => {
             Submit
           </Button>
         </form>
-        <Typography variant="h5" color="textPrimary">
+        <Typography variant="body1" color="textPrimary">
           Already have an account?{" "}
           <IconButton>
             <Link to="/login" type="button">
@@ -139,7 +162,7 @@ const RegisterScreen = () => {
           </IconButton>
         </Typography>
       </Grid>
-      <Grid item xs={1} sm={4} />
+      <Grid item xs={1} sm={3} />
     </>
   );
 };

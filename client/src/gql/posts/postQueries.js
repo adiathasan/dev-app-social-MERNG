@@ -5,6 +5,7 @@ export const GET_POSTS_QUERY = gql`
     getPosts {
       totalComment
       totalLike
+      image
       _id
       body
       comments {

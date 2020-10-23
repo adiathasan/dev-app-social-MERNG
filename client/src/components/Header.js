@@ -15,7 +15,9 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import { Link } from "react-router-dom";
 import Loader from "./Loader";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { SIGN_UP_RESET } from "../constants/userConstants";
+import { LOADER_REQUEST, LOADER_SUCCESS } from "../constants/postConstants";
 
 const useStyles = makeStyles((theme) => ({
   brand: {
@@ -93,9 +95,12 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Header() {
   const { isLoading } = useSelector((state) => state.loader);
+  const { user } = useSelector((state) => state.user);
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+
+  const dispatch = useDispatch();
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -135,9 +140,24 @@ export default function Header() {
         </Link>
       </MenuItem>
       <MenuItem onClick={handleMenuClose}>
-        <Link to="/login" style={{ textDecoration: "none", color: "inherit" }}>
-          Sign-In
-        </Link>
+        {!user ? (
+          <Link
+            to="/login"
+            style={{ textDecoration: "none", color: "inherit" }}>
+            Sign-In
+          </Link>
+        ) : (
+          <Typography
+            onClick={() => {
+              dispatch({ type: LOADER_REQUEST });
+              setTimeout(() => {
+                dispatch({ type: SIGN_UP_RESET });
+                dispatch({ type: LOADER_SUCCESS });
+              }, 1500);
+            }}>
+            Sign-Out
+          </Typography>
+        )}
       </MenuItem>
     </Menu>
   );
@@ -191,7 +211,16 @@ export default function Header() {
         <Toolbar>
           <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
             <Typography variant="h5" color="inherit" className={classes.brand}>
-              {"De<v>Book"}
+              <img
+                style={{
+                  height: "40px",
+                  marginTop: ".3rem",
+                  borderRadius: "999px",
+                  boxShadow: "0 0 10px .8px rgba(255, 255, 255, .4)",
+                }}
+                src="/logo.png"
+                alt="logo"
+              />
             </Typography>
           </Link>
           <div className={classes.search}>

@@ -6,21 +6,61 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useMutation } from "react-apollo";
+import { LOGIN_MUTATION } from "../gql/authentication/userMutation";
+import { LOADER_REQUEST, LOADER_SUCCESS } from "../constants/postConstants";
+import Message from "../components/Message";
+import { useDispatch, useSelector } from "react-redux";
+import { userSignUpAction } from "../actions/userActions";
 
-const LoginScreen = () => {
+const LoginScreen = ({ history }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState(null);
+  const [resultUser, setResultUser] = useState(null);
+  const dispatch = useDispatch();
 
-  const handleSubmit = (e) => {
+  const { user } = useSelector((state) => state.user);
+
+  const [loginFunc, { loading }] = useMutation(LOGIN_MUTATION, {
+    update(_, { data }) {
+      setResultUser(data);
+    },
+    variables: {
+      email,
+      password,
+    },
+  });
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      await loginFunc();
+    } catch (error) {
+      setMessage(error.graphQLErrors[0].message);
+      dispatch({ type: LOADER_SUCCESS });
+    }
   };
+
+  useEffect(() => {
+    if (user) {
+      history.push("/");
+    } else {
+      if (loading) {
+        dispatch({ type: LOADER_REQUEST });
+      } else if (!loading && resultUser) {
+        dispatch(userSignUpAction(resultUser));
+        dispatch({ type: LOADER_SUCCESS });
+      }
+    }
+  }, [loading, dispatch, history, user, resultUser]);
 
   return (
     <>
-      <Grid item xs={1} sm={4} />
-      <Grid item xs={10} sm={4} justify="center" container>
+      <Grid item xs={1} sm={3} />
+      <Grid item xs={10} sm={6} justify="center" container>
         <Typography variant="h4" style={{ color: "darkblue" }}>
           Login
           <Divider />
@@ -32,6 +72,7 @@ const LoginScreen = () => {
             padding: "2rem",
             borderRadius: "6px",
           }}>
+          {message && <Message message={message} />}
           <FormControl
             noValidate
             autoComplete="on"
@@ -71,14 +112,14 @@ const LoginScreen = () => {
             submit
           </Button>
         </form>
-        <Typography variant="h5" color="textPrimary">
+        <Typography variant="body1" color="textPrimary">
           Don't have an account?{" "}
           <Link to="/register" type="button">
             Register
           </Link>
         </Typography>
       </Grid>
-      <Grid item xs={1} sm={4} />
+      <Grid item xs={1} sm={3} />
     </>
   );
 };

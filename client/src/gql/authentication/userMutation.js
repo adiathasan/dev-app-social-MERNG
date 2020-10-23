@@ -14,4 +14,16 @@ const REGISTER_MUTATION = gql`
   }
 `;
 
-export { REGISTER_MUTATION };
+const LOGIN_MUTATION = gql`
+  mutation login($email: String!, $password: String!) {
+    login(loginInput: { email: $email, password: $password }) {
+      _id
+      username
+      email
+      token
+      createdAt
+    }
+  }
+`;
+
+export { REGISTER_MUTATION, LOGIN_MUTATION };

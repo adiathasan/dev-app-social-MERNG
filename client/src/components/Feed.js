@@ -16,6 +16,8 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Collapse from "@material-ui/core/Collapse";
 import clsx from "clsx";
 import moment from "moment";
+import { useSelector } from "react-redux";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: 345,
@@ -50,11 +52,15 @@ const Feed = ({
     totalLike,
     totalComment,
     updatedAt,
-    user,
+    image,
+    user: postedUser,
   },
 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
+
+  const { user } = useSelector((state) => state.user);
+
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -63,7 +69,7 @@ const Feed = ({
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
-            {user.username.split("")[0]}
+            {postedUser.username.split("")[0]}
           </Avatar>
         }
         action={
@@ -71,12 +77,16 @@ const Feed = ({
             <MoreVertIcon />
           </IconButton>
         }
-        title={user.username}
+        title={postedUser.username}
         subheader={moment(Number(createdAt)).calendar()}
       />
       <CardMedia
         className={classes.media}
-        image="https://www.simplilearn.com/ice9/course_images/icons/DMAdvanced-Social-Media.svgz"
+        image={
+          image
+            ? image
+            : "https://www.simplilearn.com/ice9/course_images/icons/DMAdvanced-Social-Media.svgz"
+        }
         title="Paella dish"
       />
       <CardContent>
@@ -85,9 +95,19 @@ const Feed = ({
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
+        {totalLike}
         <IconButton aria-label="add to favorites">
-          {totalLike}
-          <FavoriteIcon />
+          <FavoriteIcon
+            color={
+              user
+                ? likes.map((like) => {
+                    if (like.user === user._id) {
+                      return "secondary";
+                    }
+                  })[0]
+                : "inherit"
+            }
+          />
         </IconButton>
         <IconButton aria-label="share">
           <ShareIcon />

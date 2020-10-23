@@ -2,6 +2,7 @@ const { AuthenticationError } = require("apollo-server");
 
 const { Post } = require("../../models/postModel");
 const checkAuth = require("../../utils/auth");
+
 const postResolver = {
   Query: {
     getPosts: async () => {
@@ -27,11 +28,13 @@ const postResolver = {
     },
   },
   Mutation: {
-    createPost: async (_, { body }, context) => {
+    createPost: async (_, { body, image }, context) => {
       const user = checkAuth(context);
       const post = await Post.create({
         user: user._id,
         body,
+        user,
+        image,
       });
       if (!post) {
         throw new Error("Couldn't create post");
