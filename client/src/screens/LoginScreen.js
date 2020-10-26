@@ -39,14 +39,18 @@ const LoginScreen = ({ history }) => {
     try {
       await loginFunc();
     } catch (error) {
-      setMessage(error.graphQLErrors[0].message);
+      setMessage(error);
       dispatch({ type: LOADER_SUCCESS });
     }
   };
 
+  const redirect = history.location.search
+    ? history.location.search.split("=")[1]
+    : "/";
+
   useEffect(() => {
     if (user) {
-      history.push("/");
+      history.push(redirect);
     } else {
       if (loading) {
         dispatch({ type: LOADER_REQUEST });
@@ -55,7 +59,7 @@ const LoginScreen = ({ history }) => {
         dispatch({ type: LOADER_SUCCESS });
       }
     }
-  }, [loading, dispatch, history, user, resultUser]);
+  }, [loading, dispatch, history, user, resultUser, redirect]);
 
   return (
     <>
@@ -72,7 +76,14 @@ const LoginScreen = ({ history }) => {
             padding: "2rem",
             borderRadius: "6px",
           }}>
-          {message && <Message message={message} />}
+          {message &&
+            message.graphQLErrors.map(({ message }, i) => (
+              <Message message={message} key={i} />
+            ))}
+
+          {message && message.networkError && (
+            <Message message={message.networkError} />
+          )}
           <FormControl
             noValidate
             autoComplete="on"

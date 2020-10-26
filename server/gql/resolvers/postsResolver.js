@@ -1,4 +1,5 @@
-const { AuthenticationError } = require("apollo-server");
+const { AuthenticationError, ApolloError } = require("apollo-server");
+const mongoose = require("mongoose");
 
 const { Post } = require("../../models/postModel");
 const checkAuth = require("../../utils/auth");
@@ -16,15 +17,20 @@ const postResolver = {
       }
     },
     getPostById: async (_, { postId }) => {
-      const post = await Post.findById(postId).populate(
-        "user",
-        "username email"
-      );
+      if (mongoose.isValidObjectId(postId)) {
+        const post = await Post.findOne({ _id: postId }).populate(
+          "user",
+          "username email"
+        );
 
-      if (!post) {
-        throw new Error("Post not found.");
+        if (!post) {
+          throw new ApolloError("Post not found.");
+        } else {
+          return { ...post._doc };
+        }
+      } else {
+        throw new ApolloError("Post not found.");
       }
-      return { ...post._doc };
     },
   },
   Mutation: {

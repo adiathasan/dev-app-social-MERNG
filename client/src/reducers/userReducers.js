@@ -12,11 +12,6 @@ const userSignUpReducer = (state = { user: null }, action) => {
         ...state,
         error: action.payload,
       };
-    case userTypes.SIGN_UP_FAIL:
-      return {
-        ...state,
-        error: action.payload,
-      };
     case userTypes.SIGN_UP_RESET:
       localStorage.removeItem("user");
       return {

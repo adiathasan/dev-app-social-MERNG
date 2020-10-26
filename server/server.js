@@ -10,12 +10,14 @@ const userResolver = require("./gql/resolvers/usersResolver");
 const pubsub = new PubSub();
 
 const dbFunc = async () => {
-  const connect = await mongoose.connect(MONGODB_URI, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true,
-  });
-  if (connect) {
+  try {
+    await mongoose.connect(MONGODB_URI, {
+      useUnifiedTopology: true,
+      useNewUrlParser: true,
+    });
     console.log("mongoDB connected");
+  } catch (error) {
+    throw new Error("couldn't connect");
   }
 };
 
@@ -26,7 +28,12 @@ const resolvers = {
     totalLike: (parent) => parent.likes.length,
     totalComment: (parent) => parent.comments.length,
   },
+  User: {
+    totalFollowers: (parent) => parent.followers.length,
+    totalFollowing: (parent) => parent.following.length,
+  },
   Query: {
+    ...userResolver.Query,
     ...postResolver.Query,
   },
   Mutation: {
@@ -42,6 +49,7 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: ({ req }) => ({ req, pubsub }),
+  cors: { credentials: true },
 });
 
 server.listen(5000).then((res) => {

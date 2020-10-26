@@ -8,6 +8,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import MessageScreen from "./screens/MessageScreen";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
+import SinglePostScreen from "./screens/SinglePostScreen";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,6 +31,7 @@ function App() {
             <Route path="/messages" component={MessageScreen} />
             <Route path="/login" component={LoginScreen} />
             <Route path="/register" component={RegisterScreen} />
+            <Route path="/posts/:postId" component={SinglePostScreen} />
             <Route path="/" component={HomeScreen} exact />
           </Switch>
         </Grid>

@@ -149,11 +149,7 @@ export default function Header() {
         ) : (
           <Typography
             onClick={() => {
-              dispatch({ type: LOADER_REQUEST });
-              setTimeout(() => {
-                dispatch({ type: SIGN_UP_RESET });
-                dispatch({ type: LOADER_SUCCESS });
-              }, 1500);
+              dispatch({ type: SIGN_UP_RESET });
             }}>
             Sign-Out
           </Typography>
@@ -213,9 +209,9 @@ export default function Header() {
             <Typography variant="h5" color="inherit" className={classes.brand}>
               <img
                 style={{
-                  height: "40px",
+                  height: "37px",
                   marginTop: ".3rem",
-                  borderRadius: "999px",
+                  borderRadius: "2px 2px 20px 2px",
                   boxShadow: "0 0 10px .8px rgba(255, 255, 255, .4)",
                 }}
                 src="/logo.png"

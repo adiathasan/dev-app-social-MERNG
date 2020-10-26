@@ -14,13 +14,25 @@ const typeDefs = gql`
     createdAt: String!
     updatedAt: String!
   }
+  type followers {
+    user: ID!
+    username: String!
+  }
+  type following {
+    user: ID!
+    username: String!
+  }
   type User {
     _id: ID!
     image: String!
     username: String!
-    email: String!
+    email: String
     token: String!
     createdAt: String!
+    totalFollowing: Int!
+    totalFollowers: Int!
+    followers: [followers]
+    following: [following]
   }
   type Post {
     _id: ID!
@@ -35,9 +47,15 @@ const typeDefs = gql`
     updatedAt: String!
   }
 
+  type UserWithPost {
+    user: User!
+    posts: [Post]!
+  }
+
   type Query {
     getPosts: [Post]
     getPostById(postId: ID!): Post!
+    getUserById(userId: ID!): UserWithPost!
   }
 
   input registerInput {
@@ -49,10 +67,16 @@ const typeDefs = gql`
     email: String!
     password: String!
   }
+  input followArgs {
+    userId: ID!
+    userTofollowId: ID!
+    userTofollowUsername: String!
+  }
 
   type Mutation {
     login(loginInput: loginInput): User!
     register(registerInput: registerInput): User!
+    followUnfollowUser(followArgs: followArgs): User!
   }
   extend type Mutation {
     createPost(body: String!, image: String): Post!
