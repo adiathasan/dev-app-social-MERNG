@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
   grow: {
     flexGrow: 1,
+    backgroundColor: "black",
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -203,7 +204,7 @@ export default function Header() {
 
   return (
     <div className={classes.grow}>
-      <AppBar position="fixed">
+      <AppBar position="fixed" style={{ backgroundColor: "darkblue" }}>
         <Toolbar>
           <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
             <Typography variant="h5" color="inherit" className={classes.brand}>
@@ -211,10 +212,8 @@ export default function Header() {
                 style={{
                   height: "37px",
                   marginTop: ".3rem",
-                  borderRadius: "2px 2px 20px 2px",
-                  boxShadow: "0 0 10px .8px rgba(255, 255, 255, .4)",
                 }}
-                src="/logo.png"
+                src="/favicon.ico"
                 alt="logo"
               />
             </Typography>

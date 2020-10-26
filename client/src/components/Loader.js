@@ -30,11 +30,7 @@ export default function Loader() {
 
   return (
     <div className={classes.root}>
-      <LinearProgress
-        variant="determinate"
-        color="secondary"
-        value={progress}
-      />
+      <LinearProgress variant="determinate" color="primary" value={progress} />
     </div>
   );
 }

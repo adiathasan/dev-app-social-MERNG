@@ -97,7 +97,7 @@ const postResolver = {
       if (!post) {
         throw new Error("Couldn't comment on the post");
       }
-      post.comments = [{ body, user: _id }, ...post.comments];
+      post.comments = [{ body, user: _id, username }, ...post.comments];
 
       const postWithNewComment = await post.save();
       return { ...postWithNewComment._doc, username, email };
@@ -159,10 +159,8 @@ const postResolver = {
       const unLikeIndex = post.likes.findIndex((p) => p.user._id == _id);
       if (unLikeIndex !== -1) {
         post.likes.splice(unLikeIndex, 1);
-        console.log(post.likes, "unlike", unLikeIndex);
       } else {
-        post.likes = [{ user: _id }, ...post.likes];
-        console.log(post.likes);
+        post.likes = [{ user: _id, username }, ...post.likes];
       }
       const updatedPost = await post.save();
       return { ...updatedPost._doc, username, email };

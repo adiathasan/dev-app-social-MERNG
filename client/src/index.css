@@ -22,3 +22,36 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.comment {
+  display: flex;
+  position: relative;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(221, 217, 217, 0.432);
+  padding: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.219);
+  border-radius: 6px;
+}
+
+.form-comment {
+  margin-bottom: 1rem;
+  padding: 1rem 0.5rem;
+  border-bottom: 1px solid rgba(158, 185, 243, 0.459);
+  border-top: 1px solid rgba(171, 154, 247, 0.459);
+}
+
+.sub {
+  font-weight: 300;
+  font-size: x-small;
+  position: absolute;
+  bottom: 0.1rem;
+  right: 0.3rem;
+}
+
+.avatar-comment {
+  transform: scale(0.7);
+  background-color: #150669;
+  margin-bottom: 1rem;
+}

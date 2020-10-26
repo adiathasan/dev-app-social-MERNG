@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -20,6 +20,8 @@ import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { useMutation } from "react-apollo";
 import {
+  COMMENT_CREATE_MUTATION,
+  COMMENT_DELETE_MUTATION,
   POST_DELETE_MUTATION,
   POST_LIKE_MUTATION,
 } from "../gql/posts/postMutation";
@@ -28,6 +30,15 @@ import { useHistory } from "react-router-dom";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import { Link } from "react-router-dom";
 import Message from "../screens/MessageScreen";
+import {
+  Button,
+  Divider,
+  FormControl,
+  Grid,
+  TextField,
+} from "@material-ui/core";
+import SendIcon from "@material-ui/icons/Send";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: 345,
@@ -65,11 +76,19 @@ const Feed = ({
     user: postedUser,
   },
   refetch,
+  single,
 }) => {
   const classes = useStyles();
+
+  const commonRef = useRef(null);
+
   const [expanded, setExpanded] = React.useState(false);
 
   const [like, setLike] = React.useState(false);
+
+  const [comment, setComment] = React.useState("");
+
+  // const [commentId, setCommentId] = React.useState(null);
 
   const [loadingLike, setLoadingLike] = React.useState(false);
 
@@ -84,6 +103,7 @@ const Feed = ({
   const [deletePostFunc, { error }] = useMutation(POST_DELETE_MUTATION, {
     async update(_, __) {
       await refetch();
+      setLoadingLike(false);
       history.push("/");
     },
     variables: {
@@ -92,6 +112,24 @@ const Feed = ({
     refetchQueries: [{ query: GET_POSTS_QUERY }],
     awaitRefetchQueries: true,
   });
+
+  const [createCommentFunc, { error: commentError }] = useMutation(
+    COMMENT_CREATE_MUTATION,
+    {
+      update: async (_, __) => {
+        await refetch();
+        setComment("");
+        commonRef.current.blur();
+        setLoadingLike(false);
+      },
+      variables: {
+        postId: _id,
+        body: comment,
+      },
+      refetchQueries: [{ query: GET_POSTS_QUERY }],
+      awaitRefetchQueries: true,
+    }
+  );
 
   const [likePostFunc, ___] = useMutation(POST_LIKE_MUTATION, {
     async update(_, __) {
@@ -105,19 +143,56 @@ const Feed = ({
     awaitRefetchQueries: true,
   });
 
+  const [deleteCommentFunc, $] = useMutation(COMMENT_DELETE_MUTATION, {
+    async update(_, __) {
+      await refetch();
+      setLoadingLike(false);
+    },
+    refetchQueries: [{ query: GET_POSTS_QUERY }],
+    awaitRefetchQueries: true,
+  });
+
   const handleDelete = (e) => {
+    if (user) {
+      if (window.confirm("are you sure!")) {
+        if (!loadingLike) {
+          deletePostFunc();
+          setLoadingLike(true);
+        }
+      } else {
+        history.push("/login?redirect=posts/" + _id);
+      }
+    }
     if (window.confirm("are you sure!")) {
-      deletePostFunc();
     }
   };
 
-  useEffect(() => {
-    if (user && likes.find((like) => user._id === like.user)) {
-      setLike(true);
-    } else {
-      setLike(false);
+  const handleDeleteComment = (e, commentId) => {
+    if (user) {
+      if (window.confirm("are you sure!")) {
+        if (!loadingLike) {
+          deleteCommentFunc({ variables: { postId: _id, commentId } });
+          setLoadingLike(true);
+        }
+      } else {
+        history.push("/login?redirect=posts/" + _id);
+      }
     }
-  }, [likes, user]);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (user) {
+      if (!loadingLike) {
+        if (comment !== "") {
+          setLoadingLike(true);
+          createCommentFunc();
+        }
+      }
+    } else {
+      history.push("/login?redirect=posts/" + _id);
+    }
+  };
 
   const handleLike = (e) => {
     if (user) {
@@ -130,6 +205,14 @@ const Feed = ({
     }
   };
 
+  useEffect(() => {
+    if (user && likes.find((like) => user._id === like.user)) {
+      setLike(true);
+    } else {
+      setLike(false);
+    }
+  }, [likes, user]);
+
   return (
     <motion.div
       id={_id}
@@ -140,7 +223,7 @@ const Feed = ({
         <CardHeader
           avatar={
             <Avatar aria-label="recipe" className={classes.avatar}>
-              {postedUser.username.split("")[0]}
+              {postedUser.username[0].toUpperCase()}
             </Avatar>
           }
           action={
@@ -150,7 +233,7 @@ const Feed = ({
                 onClick={handleDelete}
                 style={{ color: "red" }}
                 aria-label="settings">
-                <Delete />
+                <Delete color="error" />
               </IconButton>
             )
           }
@@ -165,9 +248,15 @@ const Feed = ({
         {error && error.networkError && (
           <Message message={error.networkError.message} />
         )}
-        <Link
-          to={`posts/${_id}`}
-          style={{ textDecoration: "none", color: "inherit" }}>
+        {commentError &&
+          commentError.graphQLErrors.map(({ message }, i) => (
+            <Message message={message} key={i} />
+          ))}
+
+        {commentError && commentError.networkError && (
+          <Message message={commentError.networkError.message} />
+        )}
+        {single ? (
           <CardMedia
             className={classes.media}
             image={
@@ -177,12 +266,27 @@ const Feed = ({
             }
             title="Paella dish"
           />
-        </Link>
+        ) : (
+          <Link
+            to={`posts/${_id}`}
+            style={{ textDecoration: "none", color: "inherit" }}>
+            <CardMedia
+              className={classes.media}
+              image={
+                image
+                  ? image
+                  : "https://www.simplilearn.com/ice9/course_images/icons/DMAdvanced-Social-Media.svgz"
+              }
+              title="Paella dish"
+            />
+          </Link>
+        )}
 
         <CardContent>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {body}
+          <Typography variant="caption" paragraph>
+            # {body}
           </Typography>
+          <Divider />
         </CardContent>
         <CardActions disableSpacing>
           {totalLike}
@@ -193,9 +297,19 @@ const Feed = ({
               <FavoriteBorderIcon color="action" />
             )}
           </IconButton>
-          <IconButton aria-label="share">
-            <ShareIcon />
-          </IconButton>
+
+          <Typography
+            paragraph
+            variant="body2"
+            style={{
+              paddingTop: ".9rem",
+              textAlign: "center",
+              marginLeft: "auto",
+            }}>
+            {totalComment > 1
+              ? `${totalComment} comments`
+              : `${totalComment} comment`}
+          </Typography>
           <IconButton
             className={clsx(classes.expand, {
               [classes.expandOpen]: expanded,
@@ -208,13 +322,62 @@ const Feed = ({
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <CardContent>
-            <Typography paragraph>Total Comments:{totalComment}</Typography>
-            <Typography paragraph>Comments:</Typography>
-            {comments.map((c) => (
-              <Typography paragraph key={c._id}>
-                {c.body}
-              </Typography>
-            ))}
+            <form onSubmit={handleSubmit} className="form-comment">
+              <Grid container>
+                <Grid item xs={10}>
+                  <FormControl fullWidth color="primary" focused>
+                    <TextField
+                      ref={commonRef}
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      id="comment"
+                      placeholder="write a comment..."
+                      variant="outlined"
+                    />
+                  </FormControl>
+                </Grid>
+                <Grid item xs={2}>
+                  <Button
+                    style={{ height: "100%" }}
+                    type="submit"
+                    color="primary"
+                    startIcon={<SendIcon />}></Button>
+                </Grid>
+              </Grid>
+            </form>
+            {comments &&
+              comments.map((c) => (
+                <Grid
+                  container
+                  key={c._id}
+                  justify="center"
+                  alignItems="center">
+                  <Grid item xs={2}>
+                    <Avatar
+                      className="avatar-comment"
+                      aria-label="recipe"
+                      style={{ backgroundColor: "#150669" }}>
+                      {c.username[0].toUpperCase()}
+                    </Avatar>
+                  </Grid>
+                  <Grid item xs={10}>
+                    <Typography variant="caption" className="comment" paragraph>
+                      {c.body}
+                      <sub className="sub">
+                        {moment(Number(c.createdAt)).fromNow()}
+                      </sub>
+                      {user && user._id === c.user && (
+                        <IconButton
+                          onClick={(e) => handleDeleteComment(e, c._id)}
+                          style={{ color: "red" }}
+                          aria-label="settings">
+                          <Delete color="error" />
+                        </IconButton>
+                      )}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              ))}
           </CardContent>
         </Collapse>
       </Card>

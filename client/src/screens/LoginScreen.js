@@ -52,6 +52,7 @@ const LoginScreen = ({ history }) => {
     if (user) {
       history.push(redirect);
     } else {
+      dispatch({ type: LOADER_SUCCESS });
       if (loading) {
         dispatch({ type: LOADER_REQUEST });
       } else if (!loading && resultUser) {

@@ -9,6 +9,7 @@ import MessageScreen from "./screens/MessageScreen";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import SinglePostScreen from "./screens/SinglePostScreen";
+import "./index.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {

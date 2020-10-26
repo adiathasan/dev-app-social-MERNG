@@ -11,6 +11,7 @@ export const GET_POSTS_QUERY = gql`
       comments {
         body
         user
+        username
         _id
         createdAt
         updatedAt
@@ -44,6 +45,7 @@ export const GET_SINGLE_POST_QUERY = gql`
         _id
         createdAt
         updatedAt
+        username
       }
       likes {
         _id

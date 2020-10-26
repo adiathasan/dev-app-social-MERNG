@@ -5,6 +5,7 @@ const typeDefs = gql`
     _id: ID!
     body: String!
     user: ID!
+    username: String
     createdAt: String!
     updatedAt: String!
   }
@@ -13,6 +14,7 @@ const typeDefs = gql`
     user: ID!
     createdAt: String!
     updatedAt: String!
+    username: String
   }
   type followers {
     user: ID!

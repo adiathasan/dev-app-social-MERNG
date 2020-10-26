@@ -10,6 +10,7 @@ const postSchema = new Schema(
         {
           body: String,
           user: { type: Schema.Types.ObjectId, ref: "User" },
+          username: { type: String },
         },
         { timestamps: true }
       ),
@@ -18,6 +19,7 @@ const postSchema = new Schema(
       new Schema(
         {
           user: { type: Schema.Types.ObjectId, ref: "User" },
+          username: { type: String },
         },
         { timestamps: true }
       ),

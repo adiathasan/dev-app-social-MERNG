@@ -7,7 +7,6 @@ import Message from "../components/Message";
 import Feed from "../components/Feed";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
-// import { Button, FormControl, TextField } from "@material-ui/core";
 import { motion } from "framer-motion";
 
 let refetchCopy;
@@ -73,6 +72,7 @@ const SinglePostScreen = ({ match, history }) => {
       <Grid item container xs={12} sm={6} justify="center">
         {data && (
           <Feed
+            single
             key={data.getPostById._id}
             post={data.getPostById}
             refetch={refetchCopy}
