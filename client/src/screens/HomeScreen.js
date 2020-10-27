@@ -154,7 +154,7 @@ const HomeScreen = () => {
               <TextField
                 value={thoughts}
                 onChange={(e) => setThoughts(e.target.value)}
-                color="secondary"
+                color="primary"
                 type="textarea"
                 variant="standard"
                 id="thought"

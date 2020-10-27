@@ -96,7 +96,7 @@ const RegisterScreen = ({ history }) => {
               onChange={(e) => setName(e.target.value)}
               id="name-basic"
               label="name"
-              color="secondary"
+              color="primary"
               required
               type="text"
             />
@@ -111,7 +111,7 @@ const RegisterScreen = ({ history }) => {
               onChange={(e) => setEmail(e.target.value)}
               id="email-basic"
               label="email"
-              color="secondary"
+              color="primary"
               required
             />
           </FormControl>
@@ -124,7 +124,7 @@ const RegisterScreen = ({ history }) => {
               onChange={(e) => setPassword(e.target.value)}
               id="password-basic"
               label="password"
-              color="secondary"
+              color="primary"
               required
               type="password"
             />
@@ -138,7 +138,7 @@ const RegisterScreen = ({ history }) => {
               onChange={(e) => setConfirm(e.target.value)}
               id="confirm-basic"
               label="confirm password"
-              color="secondary"
+              color="primary"
               required
               type="password"
               error={password !== confirm}
@@ -155,11 +155,9 @@ const RegisterScreen = ({ history }) => {
         </form>
         <Typography variant="body1" color="textPrimary">
           Already have an account?{" "}
-          <IconButton>
-            <Link to="/login" type="button">
-              Login
-            </Link>
-          </IconButton>
+          <Link to="/login" type="button">
+            Login
+          </Link>
         </Typography>
       </Grid>
       <Grid item xs={1} sm={3} />

@@ -10,10 +10,13 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import SinglePostScreen from "./screens/SinglePostScreen";
 import "./index.css";
+import Footer from "./components/Footer";
+import ProfileScreen from "./screens/ProfileScreen";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: "5rem",
+    minHeight: "75vh",
   },
 }));
 
@@ -32,9 +35,14 @@ function App() {
             <Route path="/messages" component={MessageScreen} />
             <Route path="/login" component={LoginScreen} />
             <Route path="/register" component={RegisterScreen} />
+            <Route path="/profile/:userId" component={ProfileScreen} />
+            <Route path="/profile" component={ProfileScreen} exact />
             <Route path="/posts/:postId" component={SinglePostScreen} />
             <Route path="/" component={HomeScreen} exact />
           </Switch>
+        </Grid>
+        <Grid item container>
+          <Footer />
         </Grid>
       </Grid>
     </Router>

@@ -10,7 +10,6 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import { red } from "@material-ui/core/colors";
 import FavoriteIcon from "@material-ui/icons/Favorite";
-import ShareIcon from "@material-ui/icons/Share";
 import Delete from "@material-ui/icons/Delete";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Collapse from "@material-ui/core/Collapse";
@@ -36,6 +35,7 @@ import {
   FormControl,
   Grid,
   TextField,
+  Tooltip,
 } from "@material-ui/core";
 import SendIcon from "@material-ui/icons/Send";
 
@@ -218,23 +218,27 @@ const Feed = ({
       id={_id}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}>
+      transition={{ duration: 0.3 }}>
       <Card className={classes.root}>
         <CardHeader
           avatar={
-            <Avatar aria-label="recipe" className={classes.avatar}>
-              {postedUser.username[0].toUpperCase()}
-            </Avatar>
+            <Link to={`/profile/${postedUser._id}`}>
+              <Avatar aria-label="recipe" className={classes.avatar}>
+                {postedUser.username[0].toUpperCase()}
+              </Avatar>
+            </Link>
           }
           action={
             user &&
             user._id === postedUser._id && (
-              <IconButton
-                onClick={handleDelete}
-                style={{ color: "red" }}
-                aria-label="settings">
-                <Delete color="error" />
-              </IconButton>
+              <Tooltip title="delete" placement="top" arrow>
+                <IconButton
+                  onClick={handleDelete}
+                  style={{ color: "red" }}
+                  aria-label="settings">
+                  <Delete color="error" />
+                </IconButton>
+              </Tooltip>
             )
           }
           title={postedUser.username}
@@ -290,13 +294,15 @@ const Feed = ({
         </CardContent>
         <CardActions disableSpacing>
           {totalLike}
-          <IconButton onClick={handleLike} aria-label="add to favorites">
-            {like ? (
-              <FavoriteIcon color="secondary" />
-            ) : (
-              <FavoriteBorderIcon color="action" />
-            )}
-          </IconButton>
+          <Tooltip title="react" placement="top" arrow>
+            <IconButton onClick={handleLike} aria-label="add to favorites">
+              {like ? (
+                <FavoriteIcon color="secondary" />
+              ) : (
+                <FavoriteBorderIcon color="action" />
+              )}
+            </IconButton>
+          </Tooltip>
 
           <Typography
             paragraph
@@ -310,15 +316,17 @@ const Feed = ({
               ? `${totalComment} comments`
               : `${totalComment} comment`}
           </Typography>
-          <IconButton
-            className={clsx(classes.expand, {
-              [classes.expandOpen]: expanded,
-            })}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more">
-            <ExpandMoreIcon />
-          </IconButton>
+          <Tooltip title="expand" placement="top" arrow>
+            <IconButton
+              className={clsx(classes.expand, {
+                [classes.expandOpen]: expanded,
+              })}
+              onClick={handleExpandClick}
+              aria-expanded={expanded}
+              aria-label="show more">
+              <ExpandMoreIcon />
+            </IconButton>
+          </Tooltip>
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <CardContent>
@@ -367,12 +375,14 @@ const Feed = ({
                         {moment(Number(c.createdAt)).fromNow()}
                       </sub>
                       {user && user._id === c.user && (
-                        <IconButton
-                          onClick={(e) => handleDeleteComment(e, c._id)}
-                          style={{ color: "red" }}
-                          aria-label="settings">
-                          <Delete color="error" />
-                        </IconButton>
+                        <Tooltip title="delete" placement="top" arrow>
+                          <IconButton
+                            onClick={(e) => handleDeleteComment(e, c._id)}
+                            style={{ color: "red" }}
+                            aria-label="settings">
+                            <Delete color="error" />
+                          </IconButton>
+                        </Tooltip>
                       )}
                     </Typography>
                   </Grid>

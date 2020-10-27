@@ -11,6 +11,7 @@
 }
 
 body {
+  overflow-x: hidden;
   font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
@@ -29,8 +30,8 @@ code {
   flex: 1;
   align-items: center;
   justify-content: space-between;
-  background-color: rgba(221, 217, 217, 0.432);
-  padding: 0.5rem;
+  background-color: rgba(4, 0, 252, 0.068);
+  padding: 0.6rem 0.5rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.219);
   border-radius: 6px;
 }
@@ -38,8 +39,8 @@ code {
 .form-comment {
   margin-bottom: 1rem;
   padding: 1rem 0.5rem;
-  border-bottom: 1px solid rgba(158, 185, 243, 0.459);
-  border-top: 1px solid rgba(171, 154, 247, 0.459);
+  border-bottom: 1px solid #020f2928;
+  border-top: 1px solid #05011423;
 }
 
 .sub {
@@ -54,4 +55,60 @@ code {
   transform: scale(0.7);
   background-color: #150669;
   margin-bottom: 1rem;
+  cursor: pointer;
+}
+
+.footer {
+  color: white;
+  padding: 1rem 0 0 0;
+  margin-top: 1rem;
+  background-color: #1966bead;
+}
+
+.header__profile {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.header__profile > .avatar-comment {
+  margin-top: 1rem;
+}
+
+.header__profile > .mobile__avatar {
+  transform: scale(0.7);
+  margin-top: -0.6rem;
+}
+
+.profile__avatar {
+  transform: scale(2);
+  margin: 1.2rem 0 2rem 0.7rem;
+}
+
+.profile__info {
+  color: #2d10d1;
+}
+
+.profile__info:nth-child(1) {
+  margin-right: 1rem;
+}
+
+.profile__left {
+  background-color: #4728f71f;
+  padding: 2rem;
+  box-shadow: 0 1px 7px -1px #00000027;
+  padding-top: 0.2rem;
+  border-radius: 6px;
+  height: 20rem;
+}
+
+/* .profile__info:nth-child(2){
+  margin-right: .5rem;
+} */
+
+.profile__right {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
 }

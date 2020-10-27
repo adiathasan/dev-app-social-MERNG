@@ -96,7 +96,7 @@ const LoginScreen = ({ history }) => {
               id="email-basic"
               label="email"
               type="email"
-              color="secondary"
+              color="primary"
               required
             />
           </FormControl>
@@ -110,7 +110,7 @@ const LoginScreen = ({ history }) => {
               onChange={(e) => setPassword(e.target.value)}
               id="password-basic"
               label="password"
-              color="secondary"
+              color="primary"
               required
               type="password"
             />

@@ -17,7 +17,7 @@ import { Link } from "react-router-dom";
 import Loader from "./Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { SIGN_UP_RESET } from "../constants/userConstants";
-import { LOADER_REQUEST, LOADER_SUCCESS } from "../constants/postConstants";
+import { Avatar } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   brand: {
@@ -82,6 +82,7 @@ const useStyles = makeStyles((theme) => ({
   },
   sectionDesktop: {
     display: "none",
+    marginTop: ".5rem",
     [theme.breakpoints.up("md")]: {
       display: "flex",
     },
@@ -189,14 +190,10 @@ export default function Header() {
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit">
-          <AccountCircle />
-        </IconButton>
+      <MenuItem onClick={handleProfileMenuOpen} className="header__profile">
+        <Avatar
+          style={{ backgroundColor: "darkblue" }}
+          className="avatar-comment"></Avatar>
         <p>Profile</p>
       </MenuItem>
     </Menu>
@@ -234,7 +231,7 @@ export default function Header() {
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <IconButton aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="secondary">
+              <Badge badgeContent={2} color="secondary">
                 <Link
                   to="/messages"
                   style={{ textDecoration: "none", color: "inherit" }}>
@@ -243,7 +240,7 @@ export default function Header() {
               </Badge>
             </IconButton>
             <IconButton aria-label="show 17 new notifications" color="inherit">
-              <Badge badgeContent={17} color="secondary">
+              <Badge badgeContent={1} color="secondary">
                 <Link
                   to="/notifications"
                   style={{ textDecoration: "none", color: "inherit" }}>
@@ -251,15 +248,11 @@ export default function Header() {
                 </Link>
               </Badge>
             </IconButton>
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
+            <MenuItem
               onClick={handleProfileMenuOpen}
-              color="inherit">
-              <AccountCircle />
-            </IconButton>
+              className="header__profile">
+              <Avatar className="mobile__avatar"></Avatar>
+            </MenuItem>
           </div>
           <div className={classes.sectionMobile}>
             <IconButton
